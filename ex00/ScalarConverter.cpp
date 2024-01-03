@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScalarConverter.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonahkollner <jonahkollner@student.42.f    +#+  +:+       +#+        */
+/*   By: jkollner <jkollner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 20:29:31 by jonahkollne       #+#    #+#             */
-/*   Updated: 2024/01/02 22:09:37 by jonahkollne      ###   ########.fr       */
+/*   Updated: 2024/01/03 12:44:11 by jkollner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,13 @@ std::string isPrintableChar(std::string input) {
 	{
 		i = std::stoi(input);
 	}
+	catch (std::out_of_range &e) {
+		return ("oof");
+	}
 	catch(const std::exception& e)
 	{
+		std::cerr << e.what() << '\n';
 		return ("Nan");
-		//std::cerr << e.what() << '\n';
 	}
 	char c = static_cast<char>(i);
 	if (std::isprint(c))
@@ -70,9 +73,14 @@ std::string isFloat(std::string input) {
 /**
  *  checks if the input is a Double
 */
-//std::string isDouble(std::string input) {
-
-//}
+std::string isDouble(std::string input) {
+	try {
+		double dbl = std::stod(input);
+		return (std::to_string(dbl).substr(0, std::to_string(dbl).find('.') + 2));
+	} catch (...) {
+		return "Nan";
+	}
+}
 
 /**
  * Converter function takes in input as a string and converts it to the other types
@@ -95,11 +103,22 @@ void ScalarConverter::convert(std::string input) {
 		return (std::cout << "This is not a valid input" << std::endl, void());
 	}
 
+	if (input.compare("nan") == 0 || input.compare("nanf") == 0
+		|| input.compare("inf") == 0 || input.compare("inff") == 0
+		|| input.compare("+inf") == 0 || input.compare("+inff") == 0
+		|| input.compare("-inf") == 0 || input.compare("-inff") == 0) {
+			std::cout << "char: impossible" << std::endl;
+			std::cout << "int: impossible" << std::endl;
+			std::cout << "float: " << input << std::endl;
+			std::cout << "double: " << input << std::endl;
+			return;
+	}
+
 	std::cout << "Input: " << input << std::endl;
 	std::cout << "char: " << isPrintableChar(input) << std::endl;
 	std::cout << "int: " << isInt(input) << std::endl;
 	std::cout << "float: " << isFloat(input)<< std::endl;
-	//std::cout << "double: " << (isDouble(input) ? input : "Nan") << std::endl;
+	std::cout << "double: " << isDouble(input)<< std::endl;
 }
 
 
